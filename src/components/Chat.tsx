@@ -4,11 +4,10 @@ import ChatContent from "../fragments/chatcontent";
 import ChatInputBox from "../fragments/chatinputbox";
 import { Post, Message } from "../../types";
 import { useCeramicContext } from "../../context";
-import { ILitNodeClient } from "@lit-protocol/types";
 
-type ChatProps = { address: string, lit: ILitNodeClient };
+type ChatProps = { address: string };
 
-const Chat = ({ address, lit }: ChatProps) => {
+const Chat = ({ address }: ChatProps) => {
   const [chatMessages, setChatMessages] = React.useState<Message[]>([]);
   const clients = useCeramicContext();
   const { composeClient } = clients;
@@ -93,8 +92,8 @@ const Chat = ({ address, lit }: ChatProps) => {
           name={address}
           numberOfMessages={chatMessages ? chatMessages.length : 0}
         />
-        {chatMessages && <ChatContent messages={chatMessages} lit={lit} />}
-        <ChatInputBox sendANewMessage={sendANewMessage} address={address} lit={lit}/>
+        {chatMessages && <ChatContent messages={chatMessages}/>}
+        <ChatInputBox sendANewMessage={sendANewMessage} address={address}/>
       </div>
     </div>
   );

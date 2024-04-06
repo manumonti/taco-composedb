@@ -1,19 +1,20 @@
 import React from "react";
 import { Message, Post } from "../../types";
 import DebouncedInput from "./debounced";
-import { encryptWithLit, encodeb64 } from "../../utils/lit";
+import { encryptWithTACo, encodeb64 } from "../../utils/taco";
 import { useCeramicContext } from "../../context";
-import { ILitNodeClient } from "@lit-protocol/types";
+import { conditions } from "@nucypher/taco";
+import { domains } from "@nucypher/taco";
 
 interface ChatInputBoxProps {
   sendANewMessage: (message: Message) => void;
   address: string;
-  lit: ILitNodeClient
 }
 
-const chain = "ethereum";
+const ritualId = 0
+const domainTapir = domains.TESTNET
 
-const ChatInputBox = ({ sendANewMessage, address, lit }: ChatInputBoxProps) => {
+const ChatInputBox = ({ sendANewMessage, address }: ChatInputBoxProps) => {
   const [newMessage, setNewMessage] = React.useState("");
   const clients = useCeramicContext();
   const { composeClient } = clients;
@@ -22,33 +23,27 @@ const ChatInputBox = ({ sendANewMessage, address, lit }: ChatInputBoxProps) => {
    * Should empty text field after sent
    */
   const doSendMessage = async () => {
+    const rpcCondition = new conditions.base.rpc.RpcCondition({
+      chain: 80001,
+      method: 'eth_getBalance',
+      parameters: [':userAddress'],
+      returnValueTest: {
+        comparator: '>',
+        value: 0,
+      },
+    });
     if (newMessage && newMessage.length > 0) {
-      const accessControlConditions = [
-        {
-          contractAddress: "",
-          standardContractType: "",
-          chain,
-          method: "",
-          parameters: [":userAddress"],
-          returnValueTest: {
-            comparator: "=",
-            value: address,
-          },
-        },
-      ];
-
-      const { ciphertext, dataToEncryptHash } = await encryptWithLit(
-        lit,
+      const thresholdMessageKit = await encryptWithTACo(
         newMessage,
-        accessControlConditions,
-        chain
+        rpcCondition,
+        domainTapir,
+        ritualId,
       );
 
-      console.log(ciphertext)
+      const tmkBytes = thresholdMessageKit.toBytes()
 
-      const stringified = JSON.stringify(accessControlConditions);
-      const b64 = new TextEncoder().encode(stringified);
-      const encoded = await encodeb64(b64);
+      const thresholdMessageKitB64 = encodeb64(tmkBytes);
+      console.log(thresholdMessageKitB64)
 
       const post: any = await composeClient.executeQuery<{
         createPosts: {
@@ -58,13 +53,10 @@ const ChatInputBox = ({ sendANewMessage, address, lit }: ChatInputBoxProps) => {
         mutation {
           createPosts(input: {
             content: {
-              body: """${dataToEncryptHash}"""
+              body: """${thresholdMessageKitB64}"""
               to: "${address}"
               created: "${new Date().toISOString()}"
-              ciphertext: "${ciphertext}"
-              chain: "${chain}"
-              accessControlConditions: "${encoded}"
-              accessControlConditionType: "accessControlConditions"
+              ciphertext: "${thresholdMessageKitB64}"
             }
           })
           {
@@ -73,8 +65,6 @@ const ChatInputBox = ({ sendANewMessage, address, lit }: ChatInputBoxProps) => {
               to
               created
               ciphertext
-              chain
-              accessControlConditions
             }
           }
         }

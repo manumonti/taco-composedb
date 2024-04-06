@@ -1,6 +1,6 @@
-# ComposeDB with LIT Protocol: Message Board
+# ComposeDB with TACo Protocol: Message Board
 
-Learn how to use LIT Protocol to encrypt and decrypt data based on on-chain condition logic while storing on ComposeDB, built on the Ceramic Network.
+Learn how to use TACo Protocol to encrypt and decrypt data based on on-chain condition logic while storing on ComposeDB, built on the Ceramic Network.
 
 For an implementation using Web3Modal for authentication, check out the `with-web3modal` branch.
 

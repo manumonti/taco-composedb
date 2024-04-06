@@ -1,30 +1,27 @@
 import React from "react";
 import { Message } from "../../types";
 import {} from "../hooks/messages-transform.types";
-import { decryptWithLit, decodeb64 } from "../../utils/lit";
 import Avatar from "./avatar";
-import { ILitNodeClient } from "@lit-protocol/types";
+import { decryptWithTACo, decodeb64 } from "../../utils/taco";
+import { domains, ThresholdMessageKit } from '@nucypher/taco';
 
 interface ChatContentProps {
   messages: Message[];
-  lit: ILitNodeClient;
 }
 
-const ChatContent = ({ messages, lit }: ChatContentProps) => {
+const ChatContent = ({ messages }: ChatContentProps) => {
 
   const handleDecrypt = async (event: any, message: Message) => {
-    const encryptedMessage = message.body;
-    const ciphertext = message.ciphertext;
-    const accessControl = await decodeb64(message.accessControlConditions);
-    const decoded = new TextDecoder().decode(accessControl);
-    const decodedMessage = await decryptWithLit(
-      lit,
-      ciphertext,
-      encryptedMessage,
-      JSON.parse(decoded),
-      message.chain
+    const mkb64 = message.ciphertext;
+    const mkBytes = await decodeb64(mkb64);
+    const thresholdMessageKit = ThresholdMessageKit.fromBytes(mkBytes);
+
+    const decryptedMessageBytes = await decryptWithTACo(
+      thresholdMessageKit,
+      domains.TESTNET,
     );
-    event.target.parentElement.children[1].innerText = decodedMessage;
+    const decryptedMessage = new TextDecoder().decode(decryptedMessageBytes)
+    event.target.parentElement.children[1].innerText = decryptedMessage;
     event.target.innerText = "Decoded!"
   }
 

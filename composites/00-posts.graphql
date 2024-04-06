@@ -5,7 +5,4 @@ type Posts @createModel(accountRelation: LIST, description: "A simple Post") {
     edited: DateTime
     created: DateTime!
     ciphertext: String @string(maxLength: 100000)
-    chain: String @string(maxLength: 100000)
-    accessControlConditions: String @string(maxLength: 100000)
-    accessControlConditionType: String @string(maxLength: 100000)
 }

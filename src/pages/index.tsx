@@ -6,14 +6,12 @@ import type { NextPage } from "next";
 import { useEffect, useState } from "react";
 import { useCeramicContext } from "../../context";
 import { authenticateCeramic } from "../../utils";
-import * as LitJsSdk from "@lit-protocol/lit-node-client";
-import { ILitNodeClient } from "@lit-protocol/types";
+import { initialize } from '@nucypher/taco';
 
 const Home: NextPage = () => {
   const clients = useCeramicContext();
   const { ceramic, composeClient } = clients;
   const [loggedIn, setLoggedIn] = useState(false);
-  const [lit, setLit] = useState<ILitNodeClient>();
   const [address, setAddress] = useState<string>("");
 
   const handleLogin = async () => {
@@ -21,18 +19,8 @@ const Home: NextPage = () => {
     const accounts = await window.ethereum.request({ method: "eth_accounts" });
     setAddress(accounts[0].toLowerCase());
     setLoggedIn(true);
-    const thisLit = startLitClient(window);
-    setLit(thisLit);
-  };
-
-  const startLitClient = (window: Window): ILitNodeClient => {
-    // connect to lit 
-    console.log("Starting Lit Client...");
-    const client = new LitJsSdk.LitNodeClient({
-      url: window.location.origin
-    });
-    client.connect();
-    return client as ILitNodeClient;
+    // Initialize TACo library?
+    await initialize()
   };
 
   useEffect(() => {
@@ -46,19 +34,19 @@ const Home: NextPage = () => {
     <>
       <Nav />
       <Head>
-        <title>Ceramic Message Board with LIT</title>
+        <title>Ceramic Message Board with TACo</title>
         <meta
           name="description"
-          content="A proof-of-concept application that uses LIT Protocol with storage on Ceramic using ComposeDB."
+          content="A proof-of-concept application that uses TACo Protocol with storage on Ceramic using ComposeDB."
         />
         <link rel="icon" href="/favicon.ico" />
       </Head>
       {loggedIn ? (
         <main className={styles.main}>
           <h1 className={styles.title}>
-            ComposeDB <span className={styles.pinkSpan}>with</span> LIT
+            ComposeDB <span className={styles.pinkSpan}>with</span> TACo
           </h1>
-          {lit && <Chat address={address} lit={lit} />}
+          {<Chat address={address} />}
         </main>
       ) : (
         <main className={styles.main}>
