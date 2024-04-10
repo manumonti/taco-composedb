@@ -37,3 +37,7 @@ To learn more about Ceramic please visit the following links
 - [Ceramic Blog](https://blog.ceramic.network/) - Browse technical tutorials and more on our blog
 - [Ceramic Discord](https://discord.com/invite/ceramic) - Join the Ceramic Discord
 - [Follow Ceramic on Twitter](https://twitter.com/ceramicnetwork) - Follow us on Twitter for latest announcements!
+
+## License
+
+Dual licensed under [MIT](LICENSE-MIT) and [Apache 2](LICENSE-APACHE)
