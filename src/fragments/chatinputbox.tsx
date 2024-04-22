@@ -1,10 +1,9 @@
 import React from "react";
 import { Message, Post } from "../../types";
 import DebouncedInput from "./debounced";
-import { encryptWithTACo, encodeb64 } from "../../utils/taco";
+import {encodeB64, encryptWithTACo} from "../../utils/taco";
 import { useCeramicContext } from "../../context";
-import { conditions } from "@nucypher/taco";
-import { domains } from "@nucypher/taco";
+import { conditions, domains } from "@nucypher/taco";
 
 interface ChatInputBoxProps {
   sendANewMessage: (message: Message) => void;
@@ -42,7 +41,7 @@ const ChatInputBox = ({ sendANewMessage, address }: ChatInputBoxProps) => {
 
       const tmkBytes = thresholdMessageKit.toBytes()
 
-      const thresholdMessageKitB64 = encodeb64(tmkBytes);
+      const thresholdMessageKitB64 = encodeB64(tmkBytes);
       console.log(thresholdMessageKitB64)
 
       const post: any = await composeClient.executeQuery<{

@@ -1,27 +1,14 @@
-import {
-  conditions,
-  decrypt,
-  domains,
-  encrypt,
-  getPorterUri,
-  initialize,
-  ThresholdMessageKit,
-} from '@nucypher/taco';
+import {conditions, decrypt, domains, encrypt, getPorterUri, ThresholdMessageKit,} from '@nucypher/taco';
 
-import { Condition } from "conditions.condition";
+import {Domain} from "domains";
 
-import { Domain } from "domains";
+import {ethers} from "ethers";
 
-import { ethers } from "ethers";
-
-const domain_tapir = domains.TESTNET
-
-export function encodeb64(uintarray: any) {
-  const b64 = Buffer.from(uintarray).toString("base64");
-  return b64;
+export function encodeB64(uint8Array: any) {
+  return Buffer.from(uint8Array).toString("base64");
 }
 
-export function decodeb64(b64String: any) {
+export function decodeB64(b64String: any) {
   return new Uint8Array(Buffer.from(b64String, "base64"));
 }
 
@@ -54,4 +41,22 @@ export async function decryptWithTACo(
         getPorterUri(domain),
         provider.getSigner(),
     )
+}
+
+export function parseUrsulaError(error: String): Array<String> {
+    const jsonLike = error.split('TACo decryption failed with errors:')[1].trim();
+
+    // Escape double quotes inside the error message strings
+    const escaped = jsonLike.replace(/ThresholdDecryptionRequestFailed\('(.*?)'\)/g, 'ThresholdDecryptionRequestFailed(\\"$1\\")');
+
+    // Parse the escaped string as JSON
+    const errors = JSON.parse(escaped);
+
+    // Extract the specific part of the error messages
+    const errorParts = Object.values(errors).map(error => {
+        const match = error.match(/Node (.*?) raised (.*?)(?=\")/);
+        return match ? match[2] : null; // match[2] contains the error type
+    });
+
+    return [...new Set(errorParts.filter(Boolean))];
 }

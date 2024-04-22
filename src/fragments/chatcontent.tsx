@@ -1,9 +1,8 @@
-import React, { useState } from "react";
-import { Message } from "../../types";
-import {} from "../hooks/messages-transform.types";
+import React, {useState} from "react";
+import {Message} from "../../types";
 import Avatar from "./avatar";
-import { decryptWithTACo, decodeb64 } from "../../utils/taco";
-import { domains, ThresholdMessageKit } from '@nucypher/taco';
+import {decodeB64, decryptWithTACo, parseUrsulaError} from "../../utils/taco";
+import {domains, ThresholdMessageKit} from '@nucypher/taco';
 
 interface ChatContentProps {
   messages: Message[];
@@ -13,8 +12,8 @@ const ChatContent = ({ messages }: ChatContentProps) => {
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
 
   const handleDecrypt = async (event: any, message: Message) => {
-    const mkb64 = message.ciphertext;
-    const mkBytes = await decodeb64(mkb64);
+    const mkB64 = message.ciphertext;
+    const mkBytes = await decodeB64(mkB64);
     const thresholdMessageKit = ThresholdMessageKit.fromBytes(mkBytes);
     let decryptedMessageBytes;
     try {
@@ -22,20 +21,18 @@ const ChatContent = ({ messages }: ChatContentProps) => {
           thresholdMessageKit,
           domains.TESTNET,
       );
-    } catch (code) {
-      console.error(`Error decrypting message: ${code}`);
-      setErrorMessage(`Error decrypting message: ${code}`);
+    } catch (err: any) {
+      console.error(`Error decrypting message: ${err}`);
+      const parsedErrors = parseUrsulaError(err.message);
+      setErrorMessage(`Error decrypting message:\n${parsedErrors.join("\n")}.`);
       return;
     }
-    const decryptedMessage = new TextDecoder().decode(decryptedMessageBytes);
-    event.target.parentElement.children[1].innerText = decryptedMessage;
+    event.target.parentElement.children[1].innerText = new TextDecoder().decode(decryptedMessageBytes);
     event.target.innerText = "Decoded!";
   }
 
   return (
     <div className="max-h-100 h-80 px-6 py-1 overflow-auto">
-      {errorMessage && <div className="error-message">{errorMessage}</div>}
-
       {messages.map((message: Message, index: number) => (
         <div
           key={index}
@@ -71,6 +68,7 @@ const ChatContent = ({ messages }: ChatContentProps) => {
           </div>
         </div>
       ))}
+      {errorMessage && <div className="error-message">{errorMessage}</div>}
     </div>
   );
 };
