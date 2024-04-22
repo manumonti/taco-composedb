@@ -16,6 +16,7 @@ const ChatContent = ({ messages }: ChatContentProps) => {
 
   const handleDecrypt = async (event: any, message: Message) => {
     setIsDecrypting(true);
+    setDecryptedMessage(null);
     const mkB64 = message.ciphertext;
     const mkBytes = await decodeB64(mkB64);
     const thresholdMessageKit = ThresholdMessageKit.fromBytes(mkBytes);
@@ -36,6 +37,9 @@ const ChatContent = ({ messages }: ChatContentProps) => {
     }
     setDecryptedMessage(new TextDecoder().decode(decryptedMessageBytes));
   };
+
+  const decryptBtnText = !!decryptedMessage ? 'Decrypted!': "Decrypt";
+  const isBtnDisabled = isDecrypting || !!decryptedMessage;
 
   return (
     <div className="max-h-100 h-80 px-6 py-1 overflow-auto">
@@ -67,11 +71,11 @@ const ChatContent = ({ messages }: ChatContentProps) => {
             {message.isChatOwner && (
                 <button
                     type="button"
-                    disabled={isDecrypting}
+                    disabled={isBtnDisabled}
                     className="flex justify-center items-center bg-transparent hover:bg-red-500 text-blue-200 font-semibold hover:text-black text-xs px-4 py-2  border border-black-300 hover:border-transparent rounded w-1/4 "
                     onClick={(el) => handleDecrypt(el, message)}
                 >
-                  {isDecrypting ? <Spinner/> : "Decrypt"}
+                  {isDecrypting ? <Spinner/> : decryptBtnText}
                 </button>
             )}
             {errorMessage && (
