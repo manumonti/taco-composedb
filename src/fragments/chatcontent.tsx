@@ -1,30 +1,45 @@
-import React from "react";
+import React, { useState } from "react";
+import { domains, ThresholdMessageKit } from "@nucypher/taco";
+import { decodeB64, decryptWithTACo, parseUrsulaError } from "../../utils/taco";
 import { Message } from "../../types";
-import {} from "../hooks/messages-transform.types";
 import Avatar from "./avatar";
-import { decryptWithTACo, decodeb64 } from "../../utils/taco";
-import { domains, ThresholdMessageKit } from '@nucypher/taco';
+import Spinner from "~/fragments/spinner";
 
 interface ChatContentProps {
   messages: Message[];
 }
 
 const ChatContent = ({ messages }: ChatContentProps) => {
+  const [errorMessage, setErrorMessage] = useState<string | null>(null);
+  const [isDecrypting, setIsDecrypting] = useState(false);
+  const [decryptedMessage, setDecryptedMessage] = useState<string | null>(null);
 
   const handleDecrypt = async (event: any, message: Message) => {
-    const mkb64 = message.ciphertext;
-    const mkBytes = await decodeb64(mkb64);
+    setIsDecrypting(true);
+    setDecryptedMessage(null);
+    const mkB64 = message.ciphertext;
+    const mkBytes = await decodeB64(mkB64);
     const thresholdMessageKit = ThresholdMessageKit.fromBytes(mkBytes);
+    let decryptedMessageBytes;
+    try {
+      decryptedMessageBytes = await decryptWithTACo(
+        thresholdMessageKit,
+        domains.TESTNET
+      );
+      setErrorMessage(null);
+    } catch (err: any) {
+      console.error(`Error decrypting message: ${err}`);
+      const parsedErrors = parseUrsulaError(err.message);
+      setErrorMessage(`Error decrypting message:\n${parsedErrors.join("\n")}.`);
+      return;
+    } finally {
+      setIsDecrypting(false);
+    }
+    setDecryptedMessage(new TextDecoder().decode(decryptedMessageBytes));
+  };
 
-    const decryptedMessageBytes = await decryptWithTACo(
-      thresholdMessageKit,
-      domains.TESTNET,
-    );
-    const decryptedMessage = new TextDecoder().decode(decryptedMessageBytes)
-    event.target.parentElement.children[1].innerText = decryptedMessage;
-    event.target.innerText = "Decoded!"
-  }
-
+  const decryptBtnText = !!decryptedMessage ? 'Decrypted!': "Decrypt";
+  const isBtnDisabled = isDecrypting || !!decryptedMessage;
 
   return (
     <div className="max-h-100 h-80 px-6 py-1 overflow-auto">
@@ -39,9 +54,9 @@ const ChatContent = ({ messages }: ChatContentProps) => {
             <Avatar />
           </div>
           <div
-            className={`px-2 w-fit py-3 flex flex-col bg-purple-500 rounded-lg text-white ${
-              message.isChatOwner ? "order-1 mr-2" : "order-2 ml-2"
-            }`}
+              className={`px-2 w-fit py-3 flex flex-col bg-purple-500 rounded-lg text-white ${
+                  message.isChatOwner ? "order-1 mr-2" : "order-2 ml-2"
+              }`}
           >
             <span className="text-xs text-gray-200">
               {message.sentBy}&nbsp;-&nbsp;
@@ -50,15 +65,23 @@ const ChatContent = ({ messages }: ChatContentProps) => {
                 minute: "2-digit",
               })}
             </span>
-            <div className="text-s max-w-md break-words" id="targetItem">{message.text}</div>
+            <div className="text-s max-w-md break-words" id="targetItem">
+              {decryptedMessage || message.text}
+            </div>
             {message.isChatOwner && (
-              <button
-                type="button"
-                className="bg-transparent hover:bg-red-500 text-blue-200 font-semibold hover:text-black text-xs px-4 py-2  border border-black-300 hover:border-transparent rounded w-1/4 "
-                onClick={(el) => handleDecrypt(el, message)}
-              >
-                Decrypt
-              </button>
+                <button
+                    type="button"
+                    disabled={isBtnDisabled}
+                    className="flex justify-center items-center bg-transparent hover:bg-red-500 text-blue-200 font-semibold hover:text-black text-xs px-4 py-2  border border-black-300 hover:border-transparent rounded w-1/4 "
+                    onClick={(el) => handleDecrypt(el, message)}
+                >
+                  {isDecrypting ? <Spinner/> : decryptBtnText}
+                </button>
+            )}
+            {errorMessage && (
+                <div className="text-red-500 text-sm mt-2 text-left w-full break-words">
+                  {errorMessage}
+                </div>
             )}
           </div>
         </div>
