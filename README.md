@@ -29,6 +29,9 @@ npm run ceramic:local
 npm run nextDev
 ```
 
+Note that your Metamask has to be switched to Amoy network and your address must have
+a positive balance of Matic to do the decryption.
+
 ## Getting Started - Original Instructions
 
 1. Install your dependencies:
