@@ -11,7 +11,7 @@ interface ChatInputBoxProps {
 }
 
 const ritualId = 0
-const domainTapir = domains.TESTNET
+const domain = domains.DEVNET
 
 const ChatInputBox = ({ sendANewMessage, address }: ChatInputBoxProps) => {
   const [newMessage, setNewMessage] = React.useState("");
@@ -35,7 +35,7 @@ const ChatInputBox = ({ sendANewMessage, address }: ChatInputBoxProps) => {
       const thresholdMessageKit = await encryptWithTACo(
         newMessage,
         rpcCondition,
-        domainTapir,
+        domain,
         ritualId,
       );
 

@@ -24,7 +24,7 @@ const ChatContent = ({ messages }: ChatContentProps) => {
     try {
       decryptedMessageBytes = await decryptWithTACo(
         thresholdMessageKit,
-        domains.TESTNET
+        domains.DEVNET
       );
       setErrorMessage(null);
     } catch (err: any) {
