@@ -42,7 +42,6 @@ const ChatInputBox = ({ sendANewMessage, address }: ChatInputBoxProps) => {
       const tmkBytes = thresholdMessageKit.toBytes()
 
       const thresholdMessageKitB64 = encodeB64(tmkBytes);
-      console.log(thresholdMessageKitB64)
 
       const post: any = await composeClient.executeQuery<{
         createPosts: {
