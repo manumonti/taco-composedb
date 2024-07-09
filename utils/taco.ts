@@ -4,16 +4,8 @@ import {Domain} from "domains";
 
 import {ethers} from "ethers";
 
-export function encodeB64(uint8Array: any) {
-  return Buffer.from(uint8Array).toString("base64");
-}
-
-export function decodeB64(b64String: any) {
-  return new Uint8Array(Buffer.from(b64String, "base64"));
-}
-
 export async function encryptWithTACo(
-    aStringThatYouWishToEncrypt: string,
+    messageToEncrypt: string,
     accessCondition: conditions.condition,
     domain: Domain,
     ritualId: number,
@@ -22,7 +14,7 @@ export async function encryptWithTACo(
     return await encrypt(
       provider,
       domain,
-      aStringThatYouWishToEncrypt,
+      messageToEncrypt,
       accessCondition,
       ritualId,
       provider.getSigner(),

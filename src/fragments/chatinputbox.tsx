@@ -1,7 +1,8 @@
 import React from "react";
 import { Message, Post } from "../../types";
 import DebouncedInput from "./debounced";
-import {encodeB64, encryptWithTACo} from "../../utils/taco";
+import { encodeB64 } from "../../utils/common";
+import { encryptWithTACo} from "../../utils/taco";
 import { useCeramicContext } from "../../context";
 import { conditions, domains } from "@nucypher/taco";
 
@@ -25,7 +26,7 @@ const ChatInputBox = ({ sendANewMessage, address }: ChatInputBoxProps) => {
     const rpcCondition = new conditions.base.rpc.RpcCondition({
       chain: 80002,
       method: 'eth_getBalance',
-      parameters: [':userAddressEIP4361'],
+      parameters: [':userAddress'],
       returnValueTest: {
         comparator: '>',
         value: 0,

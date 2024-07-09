@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { domains, ThresholdMessageKit } from "@nucypher/taco";
-import { decodeB64, decryptWithTACo, parseUrsulaError } from "../../utils/taco";
+import { decodeB64 } from "../../utils/common";
+import { decryptWithTACo, parseUrsulaError } from "../../utils/taco";
 import { Message } from "../../types";
 import Avatar from "./avatar";
 import Spinner from "~/fragments/spinner";
