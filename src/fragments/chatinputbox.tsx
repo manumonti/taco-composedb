@@ -26,7 +26,7 @@ const ChatInputBox = ({ sendANewMessage, address }: ChatInputBoxProps) => {
     const rpcCondition = new conditions.base.rpc.RpcCondition({
       chain: 80002,
       method: 'eth_getBalance',
-      parameters: [':userAddress'],
+      parameters: [':userAddressExternalEIP4361'],
       returnValueTest: {
         comparator: '>',
         value: 0,
