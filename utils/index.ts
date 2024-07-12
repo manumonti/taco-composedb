@@ -31,7 +31,7 @@ export const authenticateCeramic = async (ceramic: CeramicApi, compose: ComposeC
     // We enable the ethereum provider to get the user's addresses.
     const ethProvider = window.ethereum;
     // request ethereum accounts.
-    const addresses = await ethProvider.enable({
+    const addresses = await ethProvider.request({
       method: "eth_requestAccounts",
     });
     const accountId = await getAccountId(ethProvider, addresses[0])
