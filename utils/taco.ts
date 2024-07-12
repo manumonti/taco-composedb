@@ -23,15 +23,17 @@ export async function encryptWithTACo(
 
 export async function decryptWithTACo(
     encryptedMessage: ThresholdMessageKit,
-    domain: Domain
+    domain: Domain,
+    customParameters?: Record<string, CustomContextParam>
 ): Promise<Uint8Array> {
     const provider = new ethers.providers.Web3Provider(window.ethereum);
     return await decrypt(
         provider,
         domain,
         encryptedMessage,
+        null,  // auth provider not specified because using single-sign on
         getPorterUri(domain),
-        provider.getSigner(),
+        customParameters,
     )
 }
 
