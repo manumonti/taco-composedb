@@ -3,6 +3,7 @@ import { EthereumWebAuth, getAccountId } from "@didtools/pkh-ethereum";
 import { SiweMessage } from "@didtools/cacao";
 import type { CeramicApi } from "@ceramicnetwork/common"
 import type { ComposeClient } from "@composedb/client";
+import { ethers } from "ethers";
 
 // If you are relying on an injected provider this must be here otherwise you will have a type error. 
 declare global {
@@ -34,8 +35,10 @@ export const authenticateCeramic = async (ceramic: CeramicApi, compose: ComposeC
     const addresses = await ethProvider.request({
       method: "eth_requestAccounts",
     });
-    const accountId = await getAccountId(ethProvider, addresses[0])
-    const authMethod = await EthereumWebAuth.getAuthMethod(ethProvider, accountId)
+    const accountId = await getAccountId(ethProvider, addresses[0]);
+    // make sure address is in EIP-55 format
+    const updatedAccountId = {address: ethers.utils.getAddress(addresses[0]), chainId: accountId.chainId};
+    const authMethod = await EthereumWebAuth.getAuthMethod(ethProvider, updatedAccountId);
 
     /**
      * Create DIDSession & provide capabilities that we want to access.
