@@ -1,5 +1,6 @@
 import { DIDSession } from "did-session";
 import { EthereumWebAuth, getAccountId } from "@didtools/pkh-ethereum";
+import { SiweMessage } from "@didtools/cacao";
 import type { CeramicApi } from "@ceramicnetwork/common"
 import type { ComposeClient } from "@composedb/client";
 
@@ -53,14 +54,18 @@ export const authenticateCeramic = async (ceramic: CeramicApi, compose: ComposeC
   return session.did
 }
 
-export const connectWallet = async() => {
-  // We enable the ethereum provider to get the user's addresses.
-  const ethProvider = window.ethereum;
-  // request ethereum accounts.
-  const addresses = await ethProvider.enable({
-    method: "eth_requestAccounts",
-  });
-  const accountId = await getAccountId(ethProvider, addresses[0])
-  const authMethod = await EthereumWebAuth.getAuthMethod(ethProvider, accountId)
-  return accountId;
+export const getCeramicSiweInfo = async() => {
+  const sessionStr = localStorage.getItem("did") // for production you will want a better place than localStorage for your sessions.
+  if(!sessionStr) {
+    throw new Error("DID session not found.")
+  }
+  const session = await DIDSession.fromSession(sessionStr);
+  const message = SiweMessage.fromCacao(session.cacao);
+  const messageStr = message.toMessage();
+  const signature = message.signature;
+  if (!signature) {
+    throw new Error("SIWE signature not found.")
+  }
+
+  return {messageStr, signature}
 }
