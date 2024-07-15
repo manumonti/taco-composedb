@@ -1,10 +1,13 @@
 import React, { useState } from "react";
-import { domains, ThresholdMessageKit } from "@nucypher/taco";
+import { conditions, domains, ThresholdMessageKit } from "@nucypher/taco";
+import { SingleSignOnEIP4361AuthProvider } from "@nucypher/taco-auth";
 import { decodeB64 } from "../../utils/common";
 import { decryptWithTACo, parseUrsulaError } from "../../utils/taco";
+import { getCeramicSiweInfo } from "../../utils";
 import { Message } from "../../types";
 import Avatar from "./avatar";
 import Spinner from "~/fragments/spinner";
+
 
 interface ChatContentProps {
   messages: Message[];
@@ -18,14 +21,23 @@ const ChatContent = ({ messages }: ChatContentProps) => {
   const handleDecrypt = async (event: any, message: Message) => {
     setIsDecrypting(true);
     setDecryptedMessage(null);
+    // get ciphertext
     const mkB64 = message.ciphertext;
     const mkBytes = await decodeB64(mkB64);
     const thresholdMessageKit = ThresholdMessageKit.fromBytes(mkBytes);
+
+    // use single sign-on information for context variable
+    let {messageStr, signature} = await getCeramicSiweInfo();
+    const singleSignOnEIP4361AuthProvider = await SingleSignOnEIP4361AuthProvider.fromExistingSiweInfo(messageStr, signature);
+    const customParameters: Record<string, conditions.context.CustomContextParam> = {};
+    customParameters[':userAddressExternalEIP4361'] = await singleSignOnEIP4361AuthProvider.getOrCreateAuthSignature();
+
     let decryptedMessageBytes;
     try {
       decryptedMessageBytes = await decryptWithTACo(
         thresholdMessageKit,
-        domains.DEVNET
+        domains.DEVNET,
+        customParameters
       );
       setErrorMessage(null);
     } catch (err: any) {

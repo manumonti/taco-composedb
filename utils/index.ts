@@ -46,7 +46,7 @@ export const authenticateCeramic = async (ceramic: CeramicApi, compose: ComposeC
      *        This is not done here to allow you to add more datamodels to your application.
      */
     // TODO: update resources to only provide access to our composites
-    const resources = compose.resources
+    const resources = compose.resources;
     session = await DIDSession.authorize(authMethod, { resources });
     // Set the session in localStorage.
     localStorage.setItem('did', session.serialize());
