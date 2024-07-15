@@ -1,12 +1,10 @@
-import {conditions, decrypt, domains, encrypt, getPorterUri, ThresholdMessageKit,} from '@nucypher/taco';
-
-import {Domain} from "domains";
+import {conditions, decrypt, Domain, encrypt, getPorterUri, ThresholdMessageKit,} from '@nucypher/taco';
 
 import {ethers} from "ethers";
 
 export async function encryptWithTACo(
     messageToEncrypt: string,
-    accessCondition: conditions.condition,
+    accessCondition: conditions.condition.Condition,
     domain: Domain,
     ritualId: number,
 ): Promise<ThresholdMessageKit> {
@@ -24,7 +22,7 @@ export async function encryptWithTACo(
 export async function decryptWithTACo(
     encryptedMessage: ThresholdMessageKit,
     domain: Domain,
-    customParameters?: Record<string, CustomContextParam>
+    customParameters?: Record<string, conditions.context.CustomContextParam>
 ): Promise<Uint8Array> {
     const provider = new ethers.providers.Web3Provider(window.ethereum);
     return await decrypt(
