@@ -3,36 +3,15 @@
 Learn how to use TACo Protocol to encrypt and decrypt data based on on-chain condition logic while storing on ComposeDB,
 built on the Ceramic Network.
 
-For an implementation using Web3Modal for authentication, check out the `with-web3modal` branch.
-
 ## Getting Started
 
-Before you start, make sure you update the `@nucypher/*` dependencies with a local copy of the `@nucypher/*` packages:
-```
-"@nucypher/taco": "file:<path-to-nucypher-ts-mono>/packages/taco",
-"@nucypher/taco-auth": "file:<path-to-nucypher-ts-mono>/packages/taco-auth",
-```
+---
+**NOTE**
 
-Updated instructions. If we were to use the original instructions, we may run into a confusing error:
-
-```
-FetchError: request to http://localhost:7007/api/v0/streams failed, reason: connect ECONNREFUSED ::1:7007
-```
-
-To avoid error, run:
-
-```
-npm install
-npm run generate
-npm run ceramic:local
-# now, in another terminal
-npm run nextDev
-```
-
-Note that your Metamask has to be switched to Amoy network and your address must have
+* Your Metamask has to be switched to Polygon Amoy network and your address must have
 a positive balance of Matic to do the decryption.
-
-## Getting Started - Original Instructions
+* Ensure you are running node `v16` in your terminal
+---
 
 1. Install your dependencies:
 
@@ -48,25 +27,24 @@ npm install
 npm run generate
 ```
 
-3. Finally, run your application in a new terminal (first ensure you are running node v16 in your terminal):
+3. Run your application (you can simply execute this step for subsequent runs):
 
 ```bash
 npm run dev
 ```
+*To reset between runs of the demo, execute `localStorage.clear()` from the Javascript console.* 
 
 ## Learn More
 
-To learn more about Ceramic please visit the following links
+To learn more about TACo please visit the following links:
+- [TACo Documentation](https://docs.threshold.network/app-development/threshold-access-control-tac)
+- [Threshold Discord](https://discord.gg/threshold)
+
+To learn more about Ceramic please visit the following links:
 
 - [Ceramic Documentation](https://developers.ceramic.network/learn/welcome/) - Learn more about the Ceramic Ecosystem.
 - [ComposeDB](https://composedb.js.org/) - Details on how to use and develop with ComposeDB!
-- [AI Chatbot on ComposeDB](https://learnweb3.io/lessons/build-an-ai-chatbot-on-compose-db-and-the-ceramic-network) -
-  Build an AI-powered Chatbot and save message history to ComposeDB
-- [ComposeDB API Sandbox](https://composedb.js.org/sandbox) - Test GraphQL queries against a live dataset directly from
-  your browser
-- [Ceramic Blog](https://blog.ceramic.network/) - Browse technical tutorials and more on our blog
 - [Ceramic Discord](https://discord.com/invite/ceramic) - Join the Ceramic Discord
-- [Follow Ceramic on Twitter](https://twitter.com/ceramicnetwork) - Follow us on Twitter for latest announcements!
 
 ## License
 
