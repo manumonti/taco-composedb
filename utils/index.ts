@@ -65,7 +65,7 @@ export const getCeramicSiweInfo = async() => {
   }
   const session = await DIDSession.fromSession(sessionStr);
   const message = SiweMessage.fromCacao(session.cacao);
-  const messageStr = message.toMessage();
+  const messageStr = message.toMessageEip55();
   const signature = message.signature;
   if (!signature) {
     throw new Error("SIWE signature not found.")
