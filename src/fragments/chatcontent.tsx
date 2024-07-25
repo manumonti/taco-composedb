@@ -13,7 +13,6 @@ interface ChatContentProps {
 }
 
 const ChatContent = ({ messages }: ChatContentProps) => {
-  const [errorMessage, setErrorMessage] = useState<string | null>(null);
   const [isDecrypting, setIsDecrypting] = useState(false);
 
   const handleDecrypt = async (event: any, message: Message) => {
@@ -36,16 +35,15 @@ const ChatContent = ({ messages }: ChatContentProps) => {
         domains.DEVNET,
         customParameters
       );
-      setErrorMessage(null);
+      message.errorText = null;
+      message.decryptedText = new TextDecoder().decode(decryptedMessageBytes);
     } catch (err: any) {
       console.error(`Error decrypting message: ${err}`);
       const parsedErrors = parseUrsulaError(err.message);
-      setErrorMessage(`Error decrypting message:\n${parsedErrors.join("\n")}.`);
-      return;
+      message.errorText = `Error decrypting message:\n${parsedErrors.join("\n")}.`;
     } finally {
       setIsDecrypting(false);
     }
-    message.decryptedText = new TextDecoder().decode(decryptedMessageBytes);
   };
 
   return (
@@ -85,9 +83,9 @@ const ChatContent = ({ messages }: ChatContentProps) => {
                   {isDecrypting ? <Spinner/> : !!message.decryptedText ? 'Decrypted!': "Decrypt"}
                 </button>
             )}
-            {errorMessage && (
+            {message.errorText && (
                 <div className="text-red-500 text-sm mt-2 text-left w-full break-words">
-                  {errorMessage}
+                  {message.errorText}
                 </div>
             )}
           </div>
