@@ -32,7 +32,10 @@ npm run generate
 ```bash
 npm run dev
 ```
-*To reset between runs of the demo, execute `localStorage.clear()` from the Javascript console.* 
+
+The application will run on http://localhost:3000.
+
+*To reset the message and session data between runs of the demo, click the `Reset` button on the navigation bar.*
 
 ## Learn More
 
