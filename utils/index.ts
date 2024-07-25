@@ -73,3 +73,8 @@ export const getCeramicSiweInfo = async() => {
 
   return {messageStr, signature}
 }
+
+export const reset = () => {
+    localStorage.clear();
+    window.location.reload();
+}
