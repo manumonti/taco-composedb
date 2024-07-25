@@ -15,6 +15,7 @@ export type Post = {
 
 export interface Message extends Post {
   text: string;
+  decryptedText: string;
   sentBy: string;
   sentAt: Date;
   isChatOwner?: boolean;

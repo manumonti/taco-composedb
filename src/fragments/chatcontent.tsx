@@ -1,6 +1,5 @@
 import React, { useState } from "react";
-import { conditions, domains, ThresholdMessageKit } from "@nucypher/taco";
-import { SingleSignOnEIP4361AuthProvider } from "@nucypher/taco-auth";
+import { conditions, domains, SingleSignOnEIP4361AuthProvider, ThresholdMessageKit } from "@nucypher/taco";
 import { decodeB64 } from "../../utils/common";
 import { decryptWithTACo, parseUrsulaError } from "../../utils/taco";
 import { getCeramicSiweInfo } from "../../utils";
@@ -16,11 +15,9 @@ interface ChatContentProps {
 const ChatContent = ({ messages }: ChatContentProps) => {
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
   const [isDecrypting, setIsDecrypting] = useState(false);
-  const [decryptedMessage, setDecryptedMessage] = useState<string | null>(null);
 
   const handleDecrypt = async (event: any, message: Message) => {
     setIsDecrypting(true);
-    setDecryptedMessage(null);
     // get ciphertext
     const mkB64 = message.ciphertext;
     const mkBytes = await decodeB64(mkB64);
@@ -48,11 +45,8 @@ const ChatContent = ({ messages }: ChatContentProps) => {
     } finally {
       setIsDecrypting(false);
     }
-    setDecryptedMessage(new TextDecoder().decode(decryptedMessageBytes));
+    message.decryptedText = new TextDecoder().decode(decryptedMessageBytes);
   };
-
-  const decryptBtnText = !!decryptedMessage ? 'Decrypted!': "Decrypt";
-  const isBtnDisabled = isDecrypting || !!decryptedMessage;
 
   return (
     <div className="max-h-100 h-80 px-6 py-1 overflow-auto">
@@ -79,16 +73,16 @@ const ChatContent = ({ messages }: ChatContentProps) => {
               })}
             </span>
             <div className="text-s max-w-md break-words" id="targetItem">
-              {decryptedMessage || message.text}
+              {message.decryptedText || message.text}
             </div>
             {message.isChatOwner && (
                 <button
                     type="button"
-                    disabled={isBtnDisabled}
+                    disabled={isDecrypting || !!message.decryptedText}
                     className="flex justify-center items-center bg-transparent hover:bg-red-500 text-blue-200 font-semibold hover:text-black text-xs px-4 py-2  border border-black-300 hover:border-transparent rounded w-1/4 "
                     onClick={(el) => handleDecrypt(el, message)}
                 >
-                  {isDecrypting ? <Spinner/> : decryptBtnText}
+                  {isDecrypting ? <Spinner/> : !!message.decryptedText ? 'Decrypted!': "Decrypt"}
                 </button>
             )}
             {errorMessage && (
