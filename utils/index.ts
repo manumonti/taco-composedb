@@ -17,7 +17,18 @@ declare global {
  * @returns Promise<DID-Session> - The User's authenticated sesion.
  */
 export const authenticateCeramic = async (ceramic: CeramicApi, compose: ComposeClient) => {
-  const sessionStr = localStorage.getItem('did') // for production you will want a better place than localStorage for your sessions.
+  if (window.ethereum === null || window.ethereum === undefined) {
+    throw new Error("No injected Ethereum provider found.");
+  }
+
+  // We enable the ethereum provider to get the user's addresses.
+  const ethProvider = window.ethereum;
+  // request ethereum accounts.
+  const addresses = await ethProvider.request({
+    method: "eth_requestAccounts",
+  });
+
+  const sessionStr = localStorage.getItem(`did-${addresses[0]}`) // for production you will want a better place than localStorage for your sessions.
   let session
 
   if(sessionStr) {
@@ -25,20 +36,8 @@ export const authenticateCeramic = async (ceramic: CeramicApi, compose: ComposeC
   }
 
   if(!session || (session.hasSession && session.isExpired)) {
-    if (window.ethereum === null || window.ethereum === undefined) {
-      throw new Error("No injected Ethereum provider found.");
-    }
-
-    // We enable the ethereum provider to get the user's addresses.
-    const ethProvider = window.ethereum;
-    // request ethereum accounts.
-    const addresses = await ethProvider.request({
-      method: "eth_requestAccounts",
-    });
     const accountId = await getAccountId(ethProvider, addresses[0]);
-    // make sure address is in EIP-55 format
-    const updatedAccountId = {address: ethers.utils.getAddress(addresses[0]), chainId: accountId.chainId};
-    const authMethod = await EthereumWebAuth.getAuthMethod(ethProvider, updatedAccountId);
+    const authMethod = await EthereumWebAuth.getAuthMethod(ethProvider, accountId);
 
     /**
      * Create DIDSession & provide capabilities that we want to access.
@@ -49,7 +48,7 @@ export const authenticateCeramic = async (ceramic: CeramicApi, compose: ComposeC
     const resources = compose.resources;
     session = await DIDSession.authorize(authMethod, { resources });
     // Set the session in localStorage.
-    localStorage.setItem('did', session.serialize());
+    localStorage.setItem(`did-${addresses[0]}`, session.serialize());
   }
 
   // Set our Ceramic DID to be our session DID.
@@ -58,8 +57,8 @@ export const authenticateCeramic = async (ceramic: CeramicApi, compose: ComposeC
   return session.did
 }
 
-export const getCeramicSiweInfo = async() => {
-  const sessionStr = localStorage.getItem("did") // for production you will want a better place than localStorage for your sessions.
+export const getCeramicSiweInfo = async(address: string) => {
+  const sessionStr = localStorage.getItem(`did-${address}`) // for production you will want a better place than localStorage for your sessions.
   if(!sessionStr) {
     throw new Error("DID session not found.")
   }
@@ -72,6 +71,10 @@ export const getCeramicSiweInfo = async() => {
   }
 
   return {messageStr, signature}
+}
+
+export const alreadyLoggedIn = (address: string) => {
+    return localStorage.getItem(`did-${address}`);
 }
 
 export const reset = () => {

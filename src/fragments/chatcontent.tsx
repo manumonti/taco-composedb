@@ -1,8 +1,9 @@
 import React, { useState } from "react";
 import { conditions, domains, SingleSignOnEIP4361AuthProvider, ThresholdMessageKit } from "@nucypher/taco";
 import { decodeB64 } from "../../utils/common";
+import { useCeramicContext } from "../../context";
 import { decryptWithTACo, parseUrsulaError } from "../../utils/taco";
-import { getCeramicSiweInfo } from "../../utils";
+import { authenticateCeramic, alreadyLoggedIn, getCeramicSiweInfo } from "../../utils";
 import { Message } from "../../types";
 import Avatar from "./avatar";
 import Spinner from "~/fragments/spinner";
@@ -12,18 +13,32 @@ interface ChatContentProps {
   messages: Message[];
 }
 
+
 const ChatContent = ({ messages }: ChatContentProps) => {
   const [isDecrypting, setIsDecrypting] = useState(false);
+  const clients = useCeramicContext();
+  const { ceramic, composeClient } = clients;
 
   const handleDecrypt = async (event: any, message: Message) => {
     setIsDecrypting(true);
+    // get current address being used
+    const ethProvider = window.ethereum;
+    // request ethereum accounts.
+    const addresses = await ethProvider.request({
+      method: "eth_requestAccounts",
+    });
+    const current_address = addresses[0]
+    if (!alreadyLoggedIn(current_address)) {
+      await authenticateCeramic(ceramic, composeClient);
+    }
+
     // get ciphertext
     const mkB64 = message.ciphertext;
     const mkBytes = await decodeB64(mkB64);
     const thresholdMessageKit = ThresholdMessageKit.fromBytes(mkBytes);
 
     // use single sign-on information for context variable
-    let {messageStr, signature} = await getCeramicSiweInfo();
+    let {messageStr, signature} = await getCeramicSiweInfo(current_address);
     const singleSignOnEIP4361AuthProvider = await SingleSignOnEIP4361AuthProvider.fromExistingSiweInfo(messageStr, signature);
     const customParameters: Record<string, conditions.context.CustomContextParam> = {};
     customParameters[':userAddressExternalEIP4361'] = await singleSignOnEIP4361AuthProvider.getOrCreateAuthSignature();
