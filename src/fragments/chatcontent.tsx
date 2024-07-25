@@ -80,7 +80,7 @@ const ChatContent = ({ messages }: ChatContentProps) => {
                     className="flex justify-center items-center bg-transparent hover:bg-red-500 text-blue-200 font-semibold hover:text-black text-xs px-4 py-2  border border-black-300 hover:border-transparent rounded w-1/4 "
                     onClick={(el) => handleDecrypt(el, message)}
                 >
-                  {isDecrypting ? <Spinner/> : !!message.decryptedText ? 'Decrypted!': "Decrypt"}
+                  {isDecrypting && !message.decryptedText? <Spinner/> : !!message.decryptedText ? 'Decrypted!': "Decrypt"}
                 </button>
             )}
             {message.errorText && (
