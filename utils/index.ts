@@ -26,8 +26,12 @@ export const authenticateCeramic = async (ceramic: CeramicApi, compose: ComposeC
   const addresses = await ethProvider.request({
     method: "eth_requestAccounts",
   });
+  const currentAddress = addresses[0]
+  if (!currentAddress) {
+    throw new Error("No account available");
+  }
 
-  const didKey = `did-${addresses[0]}`;
+  const didKey = `did-${currentAddress}`;
 
   const sessionStr = localStorage.getItem(didKey) // for production you will want a better place than localStorage for your sessions.
   let session
@@ -37,7 +41,7 @@ export const authenticateCeramic = async (ceramic: CeramicApi, compose: ComposeC
   }
 
   if(!session || (session.hasSession && session.isExpired)) {
-    const accountId = await getAccountId(ethProvider, addresses[0]);
+    const accountId = await getAccountId(ethProvider, currentAddress);
     const authMethod = await EthereumWebAuth.getAuthMethod(ethProvider, accountId);
 
     /**

@@ -27,6 +27,9 @@ const ChatContent = ({ messages }: ChatContentProps) => {
       method: "eth_requestAccounts",
     });
     const currentAddress = addresses[0]
+    if (!currentAddress) {
+      throw new Error("No account available");
+    }
     if (!alreadyLoggedIn(currentAddress)) {
       await authenticateCeramic(ceramic, composeClient);
     }
