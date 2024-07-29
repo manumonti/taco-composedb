@@ -1,2 +1,0 @@
-// This is an auto-generated file, do not edit manually
-export const definition = {"models":{"Posts":{"id":"kjzl6hvfrbw6c8s4vou57vstsy9tnf6fck6srqj64lf2zmbgyq1btyhia00b8g0","accountRelation":{"type":"list"}}},"objects":{"Posts":{"to":{"type":"string","required":true},"body":{"type":"string","required":true},"edited":{"type":"datetime","required":false},"created":{"type":"datetime","required":true},"ciphertext":{"type":"string","required":false},"author":{"type":"view","viewType":"documentAccount"}}},"enums":{},"accountData":{"postsList":{"type":"connection","name":"Posts"}}}
