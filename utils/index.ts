@@ -17,7 +17,7 @@ declare global {
  * @returns Promise<DID-Session> - The User's authenticated sesion.
  */
 export const authenticateCeramic = async (ceramic: CeramicApi, compose: ComposeClient) => {
-  if (window.ethereum === null || window.ethereum === undefined) {
+  if (!window.ethereum) {
     throw new Error("No injected Ethereum provider found.");
   }
 
@@ -28,7 +28,9 @@ export const authenticateCeramic = async (ceramic: CeramicApi, compose: ComposeC
     method: "eth_requestAccounts",
   });
 
-  const sessionStr = localStorage.getItem(`did-${addresses[0]}`) // for production you will want a better place than localStorage for your sessions.
+  const didKey = `did-${addresses[0]}`;
+
+  const sessionStr = localStorage.getItem(didKey) // for production you will want a better place than localStorage for your sessions.
   let session
 
   if(sessionStr) {
@@ -48,7 +50,7 @@ export const authenticateCeramic = async (ceramic: CeramicApi, compose: ComposeC
     const resources = compose.resources;
     session = await DIDSession.authorize(authMethod, { resources });
     // Set the session in localStorage.
-    localStorage.setItem(`did-${addresses[0]}`, session.serialize());
+    localStorage.setItem(didKey, session.serialize());
   }
 
   // Set our Ceramic DID to be our session DID.

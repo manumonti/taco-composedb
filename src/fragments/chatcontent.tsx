@@ -27,8 +27,8 @@ const ChatContent = ({ messages }: ChatContentProps) => {
     const addresses = await ethProvider.request({
       method: "eth_requestAccounts",
     });
-    const current_address = addresses[0]
-    if (!alreadyLoggedIn(current_address)) {
+    const currentAddress = addresses[0]
+    if (!alreadyLoggedIn(currentAddress)) {
       await authenticateCeramic(ceramic, composeClient);
     }
 
@@ -38,7 +38,7 @@ const ChatContent = ({ messages }: ChatContentProps) => {
     const thresholdMessageKit = ThresholdMessageKit.fromBytes(mkBytes);
 
     // use single sign-on information for context variable
-    let {messageStr, signature} = await getCeramicSiweInfo(current_address);
+    const {messageStr, signature} = await getCeramicSiweInfo(currentAddress);
     const singleSignOnEIP4361AuthProvider = await SingleSignOnEIP4361AuthProvider.fromExistingSiweInfo(messageStr, signature);
     const customParameters: Record<string, conditions.context.CustomContextParam> = {};
     customParameters[':userAddressExternalEIP4361'] = await singleSignOnEIP4361AuthProvider.getOrCreateAuthSignature();
