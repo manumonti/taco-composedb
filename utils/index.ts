@@ -3,7 +3,6 @@ import { EthereumWebAuth, getAccountId } from "@didtools/pkh-ethereum";
 import { SiweMessage } from "@didtools/cacao";
 import type { CeramicApi } from "@ceramicnetwork/common"
 import type { ComposeClient } from "@composedb/client";
-import { ethers } from "ethers";
 
 // If you are relying on an injected provider this must be here otherwise you will have a type error. 
 declare global {

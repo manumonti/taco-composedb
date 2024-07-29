@@ -16,8 +16,7 @@ interface ChatContentProps {
 
 const ChatContent = ({ messages }: ChatContentProps) => {
   const [isDecrypting, setIsDecrypting] = useState(false);
-  const clients = useCeramicContext();
-  const { ceramic, composeClient } = clients;
+  const { ceramic, composeClient } = useCeramicContext();
 
   const handleDecrypt = async (event: any, message: Message) => {
     setIsDecrypting(true);
