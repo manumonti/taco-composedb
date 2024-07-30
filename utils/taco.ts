@@ -1,20 +1,10 @@
-import {conditions, decrypt, domains, encrypt, getPorterUri, ThresholdMessageKit,} from '@nucypher/taco';
-
-import {Domain} from "domains";
+import {conditions, decrypt, Domain, encrypt, getPorterUri, ThresholdMessageKit,} from '@nucypher/taco';
 
 import {ethers} from "ethers";
 
-export function encodeB64(uint8Array: any) {
-  return Buffer.from(uint8Array).toString("base64");
-}
-
-export function decodeB64(b64String: any) {
-  return new Uint8Array(Buffer.from(b64String, "base64"));
-}
-
 export async function encryptWithTACo(
-    aStringThatYouWishToEncrypt: string,
-    accessCondition: conditions.condition,
+    messageToEncrypt: string,
+    accessCondition: conditions.condition.Condition,
     domain: Domain,
     ritualId: number,
 ): Promise<ThresholdMessageKit> {
@@ -22,7 +12,7 @@ export async function encryptWithTACo(
     return await encrypt(
       provider,
       domain,
-      aStringThatYouWishToEncrypt,
+      messageToEncrypt,
       accessCondition,
       ritualId,
       provider.getSigner(),
@@ -31,15 +21,17 @@ export async function encryptWithTACo(
 
 export async function decryptWithTACo(
     encryptedMessage: ThresholdMessageKit,
-    domain: Domain
+    domain: Domain,
+    customParameters?: Record<string, conditions.context.CustomContextParam>
 ): Promise<Uint8Array> {
     const provider = new ethers.providers.Web3Provider(window.ethereum);
     return await decrypt(
         provider,
         domain,
         encryptedMessage,
+        null,  // auth provider not specified because using single-sign on
         getPorterUri(domain),
-        provider.getSigner(),
+        customParameters,
     )
 }
 

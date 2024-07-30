@@ -1,10 +1,17 @@
 # ComposeDB with TACo Protocol: Message Board
 
-Learn how to use TACo Protocol to encrypt and decrypt data based on on-chain condition logic while storing on ComposeDB, built on the Ceramic Network.
-
-For an implementation using Web3Modal for authentication, check out the `with-web3modal` branch.
+Learn how to use TACo Protocol to encrypt and decrypt data based on on-chain condition logic while storing on ComposeDB,
+built on the Ceramic Network.
 
 ## Getting Started
+
+---
+**NOTE**
+
+* Your Metamask has to be switched to Polygon Amoy network and your address must have
+a positive balance of Matic to do the decryption.
+* Ensure you are running node `v16` in your terminal
+---
 
 1. Install your dependencies:
 
@@ -20,23 +27,27 @@ npm install
 npm run generate
 ```
 
-3. Finally, run your application in a new terminal (first ensure you are running node v16 in your terminal):
+3. Run your application (you can simply execute this step for subsequent runs):
 
 ```bash
 npm run dev
 ```
 
+The application will run on http://localhost:3000.
+
+*To reset the message and session data between runs of the demo, click the `Reset` button on the navigation bar.*
+
 ## Learn More
 
-To learn more about Ceramic please visit the following links
+To learn more about TACo please visit the following links:
+- [TACo Documentation](https://docs.threshold.network/app-development/threshold-access-control-tac)
+- [Threshold Discord](https://discord.gg/threshold)
+
+To learn more about Ceramic please visit the following links:
 
 - [Ceramic Documentation](https://developers.ceramic.network/learn/welcome/) - Learn more about the Ceramic Ecosystem.
 - [ComposeDB](https://composedb.js.org/) - Details on how to use and develop with ComposeDB!
-- [AI Chatbot on ComposeDB](https://learnweb3.io/lessons/build-an-ai-chatbot-on-compose-db-and-the-ceramic-network) - Build an AI-powered Chatbot and save message history to ComposeDB
-- [ComposeDB API Sandbox](https://composedb.js.org/sandbox) - Test GraphQL queries against a live dataset directly from your browser
-- [Ceramic Blog](https://blog.ceramic.network/) - Browse technical tutorials and more on our blog
 - [Ceramic Discord](https://discord.com/invite/ceramic) - Join the Ceramic Discord
-- [Follow Ceramic on Twitter](https://twitter.com/ceramicnetwork) - Follow us on Twitter for latest announcements!
 
 ## License
 
