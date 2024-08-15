@@ -12,7 +12,7 @@ interface ChatInputBoxProps {
 }
 
 const ritualId = 0
-const domain = domains.DEVNET
+const domain = domains.TESTNET
 
 const ChatInputBox = ({ sendANewMessage, address }: ChatInputBoxProps) => {
   const [newMessage, setNewMessage] = React.useState("");

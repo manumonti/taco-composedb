@@ -49,7 +49,7 @@ const ChatContent = ({ messages }: ChatContentProps) => {
     try {
       decryptedMessageBytes = await decryptWithTACo(
         thresholdMessageKit,
-        domains.DEVNET,
+        domains.TESTNET,
         customParameters
       );
       message.errorText = null;
