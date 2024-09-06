@@ -47,7 +47,7 @@ export const RunCommands = async () => {
       node: {},
       "state-store": {
         mode: "fs",
-        "local-directory": `~/.ceramic/statestore/`,
+        "local-directory": `${homedir()}/.ceramic/statestore/`,
       },
       indexing: {
         db: `sqlite://${homedir()}/.ceramic/indexing.sqlite`,

@@ -6,8 +6,8 @@
     "generate": "node scripts/commands.mjs",
     "dev": "node scripts/run.mjs",
     "nextDev": "next dev",
-    "ceramic": "CERAMIC_ENABLE_EXPERIMENTAL_COMPOSE_DB='true' ceramic daemon --config ./composedb.config.json",
-    "ceramic:local": "CERAMIC_ENABLE_EXPERIMENTAL_COMPOSE_DB='true' npx @ceramicnetwork/cli daemon",
+    "ceramic": "cross-env CERAMIC_ENABLE_EXPERIMENTAL_COMPOSE_DB='true' ceramic daemon --config ./composedb.config.json",
+    "ceramic:local": "cross-env CERAMIC_ENABLE_EXPERIMENTAL_COMPOSE_DB='true' npx @ceramicnetwork/cli daemon",
     "build": "next build",
     "start": "next start",
     "lint": "next lint"
@@ -26,6 +26,7 @@
     "@nucypher/taco": "^0.4.0",
     "@t3-oss/env-nextjs": "^0.10.0",
     "bootstrap": "^5.3.2",
+    "cross-env": "7.0.3",
     "did-session": "^4.0.0",
     "dids": "^5.0.0",
     "ethers": "^5.7.2",
