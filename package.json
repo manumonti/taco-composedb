@@ -23,7 +23,7 @@
     "@didtools/cacao": "^3.0.1",
     "@didtools/pkh-ethereum": "0.6.0",
     "@heroicons/react": "^2.1.5",
-    "@nucypher/taco": "^0.4.0",
+    "@nucypher/taco": "^0.5.0",
     "@t3-oss/env-nextjs": "^0.10.0",
     "bootstrap": "^5.3.2",
     "cross-env": "7.0.3",

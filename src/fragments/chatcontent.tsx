@@ -1,5 +1,6 @@
 import React, { useState } from "react";
-import { conditions, domains, SingleSignOnEIP4361AuthProvider, ThresholdMessageKit } from "@nucypher/taco";
+import { conditions, domains, ThresholdMessageKit } from "@nucypher/taco";
+import { SingleSignOnEIP4361AuthProvider, USER_ADDRESS_PARAM_EXTERNAL_EIP4361 } from "@nucypher/taco-auth";
 import { decodeB64 } from "../../utils/common";
 import { useCeramicContext } from "../../context";
 import { decryptWithTACo, parseUrsulaError } from "../../utils/taco";
@@ -39,18 +40,17 @@ const ChatContent = ({ messages }: ChatContentProps) => {
     const mkBytes = await decodeB64(mkB64);
     const thresholdMessageKit = ThresholdMessageKit.fromBytes(mkBytes);
 
-    // use single sign-on information for context variable
     const {messageStr, signature} = await getCeramicSiweInfo(currentAddress);
     const singleSignOnEIP4361AuthProvider = await SingleSignOnEIP4361AuthProvider.fromExistingSiweInfo(messageStr, signature);
-    const customParameters: Record<string, conditions.context.CustomContextParam> = {};
-    customParameters[':userAddressExternalEIP4361'] = await singleSignOnEIP4361AuthProvider.getOrCreateAuthSignature();
+    const authProvider = [USER_ADDRESS_PARAM_EXTERNAL_EIP4361, singleSignOnEIP4361AuthProvider];
 
     let decryptedMessageBytes;
     try {
       decryptedMessageBytes = await decryptWithTACo(
         thresholdMessageKit,
         domains.TESTNET,
-        customParameters
+        undefined,
+        authProvider
       );
       message.errorText = null;
       message.decryptedText = new TextDecoder().decode(decryptedMessageBytes);

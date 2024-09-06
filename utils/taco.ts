@@ -1,5 +1,5 @@
-import {conditions, decrypt, Domain, encrypt, getPorterUri, ThresholdMessageKit,} from '@nucypher/taco';
-
+import {conditions, decrypt, Domain, encrypt, ThresholdMessageKit} from '@nucypher/taco';
+import {AuthProvider} from '@nucypher/taco-auth';
 import {ethers} from "ethers";
 
 export async function encryptWithTACo(
@@ -22,16 +22,23 @@ export async function encryptWithTACo(
 export async function decryptWithTACo(
     encryptedMessage: ThresholdMessageKit,
     domain: Domain,
-    customParameters?: Record<string, conditions.context.CustomContextParam>
+    customParameters?: Record<string, conditions.context.CustomContextParam>,
+    authProvider?: [string, AuthProvider]
 ): Promise<Uint8Array> {
     const provider = new ethers.providers.Web3Provider(window.ethereum);
+    const conditionContext =
+        conditions.context.ConditionContext.fromMessageKit(encryptedMessage);
+    if (customParameters) {
+        conditionContext.addCustomContextParameterValues(customParameters);
+    }
+    if (authProvider) {
+        conditionContext.addAuthProvider(authProvider[0], authProvider[1])
+    }
     return await decrypt(
         provider,
         domain,
         encryptedMessage,
-        null,  // auth provider not specified because using single-sign on
-        getPorterUri(domain),
-        customParameters,
+        conditionContext,
     )
 }
 
