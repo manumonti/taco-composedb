@@ -7,7 +7,7 @@ import { writeComposite } from './composites.mjs';
 const events = new EventEmitter()
 const spinner = ora();
 
-const ceramic = spawn("npm", ["run", "ceramic"]);
+const ceramic = spawn(/^win/.test(process.platform) ? 'npm.cmd' : 'npm', ["run", "ceramic"]);
 ceramic.stdout.on("data", (buffer) => {
   console.log('[Ceramic]', buffer.toString())
   if (buffer.toString().includes("0.0.0.0:7007")) {
@@ -46,7 +46,7 @@ const graphiql = async () => {
 }
 
 const next = async () => {
-  const next = spawn('npm', ['run', 'nextDev'])
+  const next = spawn(/^win/.test(process.platform) ? 'npm.cmd' : 'npm', ['run', 'nextDev'])
   spinner.info("[NextJS] starting nextjs app");
   next.stdout.on('data', (buffer) => {
     console.log('[NextJS]', buffer.toString())
