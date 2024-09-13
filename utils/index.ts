@@ -38,6 +38,17 @@ export const authenticateCeramic = async (ceramic: CeramicApi, compose: ComposeC
 
   if(sessionStr) {
     session = await DIDSession.fromSession(sessionStr)
+    
+    // TODO extract to taco-web
+    const siweMessage = SiweMessage.fromCacao(session.cacao);
+    if (siweMessage.issuedAt) {
+      const twoHourWindow = new Date(siweMessage.issuedAt);
+      twoHourWindow.setHours(twoHourWindow.getHours() + 2);
+      const now = new Date();
+      if(twoHourWindow < now) {        
+        session = null;
+      }
+    }
   }
 
   if(!session || (session.hasSession && session.isExpired)) {
