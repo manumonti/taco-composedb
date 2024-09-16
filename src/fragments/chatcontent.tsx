@@ -44,18 +44,6 @@ const ChatContent = ({ messages }: ChatContentProps) => {
     const {messageStr, signature} = await getCeramicSiweInfo(currentAddress);
     const singleSignOnEIP4361AuthProvider = await SingleSignOnEIP4361AuthProvider.fromExistingSiweInfo(messageStr, signature);
 
-    // TODO extract to taco-web
-    const siweMessage = new SiweMessage(messageStr);
-    if (siweMessage.issuedAt) {
-      const twoHourWindow = new Date(siweMessage.issuedAt);
-      twoHourWindow.setHours(twoHourWindow.getHours() + 2);
-      const now = new Date();
-      if(twoHourWindow < now) {
-        reset();
-        return;
-      }
-    }
-
     const conditionContext = conditions.context.ConditionContext.fromMessageKit(thresholdMessageKit);
     conditionContext.addAuthProvider(USER_ADDRESS_PARAM_EXTERNAL_EIP4361, singleSignOnEIP4361AuthProvider);
 
