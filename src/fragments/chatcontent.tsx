@@ -4,11 +4,10 @@ import { SingleSignOnEIP4361AuthProvider, USER_ADDRESS_PARAM_EXTERNAL_EIP4361 } 
 import { decodeB64 } from "../../utils/common";
 import { useCeramicContext } from "../../context";
 import { decryptWithTACo, parseUrsulaError } from "../../utils/taco";
-import { authenticateCeramic, alreadyLoggedIn, getCeramicSiweInfo, reset } from "../../utils";
+import { authenticateCeramic, alreadyLoggedIn, getCeramicSiweInfo } from "../../utils";
 import { Message } from "../../types";
 import Avatar from "./avatar";
 import Spinner from "~/fragments/spinner";
-import { SiweMessage } from 'siwe';
 
 
 interface ChatContentProps {
