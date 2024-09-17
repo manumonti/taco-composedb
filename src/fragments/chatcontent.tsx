@@ -42,6 +42,7 @@ const ChatContent = ({ messages }: ChatContentProps) => {
 
     const {messageStr, signature} = await getCeramicSiweInfo(currentAddress);
     const singleSignOnEIP4361AuthProvider = await SingleSignOnEIP4361AuthProvider.fromExistingSiweInfo(messageStr, signature);
+
     const conditionContext = conditions.context.ConditionContext.fromMessageKit(thresholdMessageKit);
     conditionContext.addAuthProvider(USER_ADDRESS_PARAM_EXTERNAL_EIP4361, singleSignOnEIP4361AuthProvider);
 
