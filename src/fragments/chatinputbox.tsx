@@ -11,7 +11,7 @@ interface ChatInputBoxProps {
   address: string;
 }
 
-const ritualId = 0
+const ritualId = 6
 const domain = domains.TESTNET
 
 const ChatInputBox = ({ sendANewMessage, address }: ChatInputBoxProps) => {
