@@ -1,5 +1,8 @@
 # TACo with ComposeDB: Message Board Application
 
+> [!IMPORTANT]
+> Ceramic's protocol network is offline, so this demo is not working anymore.
+
 This simple browser-based messaging application illustrates how to integrate TACo's encrypt/decrypt API and predicate access to private data on prespecified on-chain conditions – all while storing the encrypted data on ComposeDB.
 
 Note that this demo is based on a fork of ceramicstudio’s lit-composedb repo, with the TACo library replacing LIT. This demonstrates that developers who have already integrated LIT’s permissioned service can easily substitute it for TACo’s decentralized access control plugin.
@@ -19,6 +22,13 @@ This demo requires:
 ```bash
 npm install
 ```
+
+> If this fails with `npm error gyp`, it may be because you have installed Python >= 3.12 and no python-setuptools.
+>
+> In Python v3.12, `distutils` module was removed. So node gyp dependency can't be installed.
+> ```
+> pip install setuptools
+> ```
 
 2. Generate your admin seed, admin did, and ComposeDB configuration file:
 
